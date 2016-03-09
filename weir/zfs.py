@@ -277,7 +277,7 @@ class ZFSDataset(object):
 
 class ZFSVolume(ZFSDataset):
     #create a block dev
-    def create(self, size, namepath,type='volume', force=False):
+    def create(self, namepath, size,type='volume', force=False):
         url = _urlsplit(self.name)
 
         cmd = ['zfs', 'create']
