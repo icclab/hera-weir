@@ -277,16 +277,16 @@ class ZFSDataset(object):
 
 class ZFSVolume(ZFSDataset):
     #create a block dev
-    def create(self, namepath, size,type='volume', force=False):
+    def create(self, namepath, size, type='volume', force=False):
         url = _urlsplit(self.name)
 
-        cmd = ['zfs', 'create']
+        cmd = ['sudo', 'zfs', 'create']
 
         if force:
             cmd.append('-p')
 
         if type != 'volume':
-            print "type not supported" + type
+            print "type not supported " + type
 
         #size of the block
         cmd.append('-V')
@@ -299,8 +299,22 @@ class ZFSVolume(ZFSDataset):
         process.check_call(cmd, netloc=url.netloc)
         return ZFSVolume(self.name)
 
-    def delete(self):
-        pass
+    def delete(self, namepath, type='volume', force=False):
+        url = _urlsplit(self.name)
+
+        cmd = ['sudo', 'zfs', 'destroy']
+
+        if force:
+            cmd.append('-p')
+
+        if type != 'volume':
+            print "type not supported " + type
+
+        cmd.append(namepath)
+
+        process.check_call(cmd, netloc=url.netloc)
+        return 'Ok'
+
 
 class ZFSFilesystem(ZFSDataset):
     def upgrade(self, *args, **kwargs):
