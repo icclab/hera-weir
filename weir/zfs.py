@@ -23,7 +23,7 @@ def find(path=None, max_depth=None, types=[]):
     url = _urlsplit(path) if path \
         else SplitResult(None, None, None, None, None)
 
-    cmd = ['zfs', 'list']
+    cmd = ['sudo', 'zfs', 'list']
 
     cmd.append('-H')
 
@@ -53,7 +53,7 @@ def findprops(path=None, max_depth=None,
     url = _urlsplit(path) if path \
         else SplitResult(None, None, None, None, None)
 
-    cmd = ['zfs', 'get']
+    cmd = ['sudo', 'zfs', 'get']
 
     cmd.append('-H')
     cmd.append('-p')
@@ -115,7 +115,7 @@ def roots():
 def create(name, type='filesystem', props={}, force=False):
     url = _urlsplit(name)
 
-    cmd = ['zfs', 'create']
+    cmd = ['sudo', 'zfs', 'create']
 
     if type == 'volume':
         raise NotImplementedError()
@@ -138,7 +138,7 @@ def receive(name, append_name=False, append_path=False,
             force=False, nomount=False):
     url = _urlsplit(name)
 
-    cmd = ['zfs', 'receive']
+    cmd = ['sudo', 'zfs', 'receive']
 
     if log.getEffectiveLevel() <= logging.INFO:
         cmd.append('-v')
@@ -187,7 +187,7 @@ class ZFSDataset(object):
     # TODO: split force to allow -f, -r and -R to be specified individually
     # TODO: remove or ignore defer option for non-snapshot datasets
     def destroy(self, defer=False, force=False):
-        cmd = ['zfs', 'destroy']
+        cmd = ['sudo', 'zfs', 'destroy']
 
         if defer:
             cmd.append('-d')
@@ -201,7 +201,7 @@ class ZFSDataset(object):
         process.check_call(cmd, netloc=self._url.netloc)
 
     def snapshot(self, snapname, recursive=False, props={}):
-        cmd = ['zfs', 'snapshot']
+        cmd = ['sudo', 'zfs', 'snapshot']
 
         if recursive:
             cmd.append('-r')
@@ -239,7 +239,7 @@ class ZFSDataset(object):
         return default if value == '-' else value
 
     def setprop(self, prop, value):
-        cmd = ['zfs', 'set']
+        cmd = ['sudo', 'zfs', 'set']
 
         cmd.append(prop + '=' + str(value))
         cmd.append(self._url.path)
@@ -247,7 +247,7 @@ class ZFSDataset(object):
         process.check_call(cmd, netloc=self._url.netloc)
 
     def delprop(self, prop, recursive=False):
-        cmd = ['zfs', 'inherit']
+        cmd = ['sudo', 'zfs', 'inherit']
 
         if recursive:
             cmd.append('-r')
@@ -341,7 +341,7 @@ class ZFSSnapshot(ZFSDataset):
 
     def send(self, base=None, intermediates=False, replicate=False,
              properties=False, deduplicate=False):
-        cmd = ['zfs', 'send']
+        cmd = ['sudo', 'zfs', 'send']
 
         if log.getEffectiveLevel() <= logging.INFO:
             cmd.append('-v')
@@ -368,7 +368,7 @@ class ZFSSnapshot(ZFSDataset):
         return process.popen(cmd, mode='rb', netloc=self._url.netloc)
 
     def hold(self, tag, recursive=False):
-        cmd = ['zfs', 'hold']
+        cmd = ['sudo', 'zfs', 'hold']
 
         if recursive:
             cmd.append('-r')
@@ -379,7 +379,7 @@ class ZFSSnapshot(ZFSDataset):
         process.check_call(cmd, netloc=self._url.netloc)
 
     def holds(self):
-        cmd = ['zfs', 'holds']
+        cmd = ['sudo', 'zfs', 'holds']
 
         cmd.append('-H')
 
@@ -390,7 +390,7 @@ class ZFSSnapshot(ZFSDataset):
                 in process.check_output(cmd, netloc=self._url.netloc)]
 
     def release(self, tag, recursive=False):
-        cmd = ['zfs', 'release']
+        cmd = ['sudo', 'zfs', 'release']
 
         if recursive:
             cmd.append('-r')
